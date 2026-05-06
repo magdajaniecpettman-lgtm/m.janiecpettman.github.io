@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio — Your Name</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --surface2: #1f1f1f;
+    --border: rgba(255,255,255,0.08);
+    --border-bright: rgba(255,255,255,0.2);
+    --text: #f0ece4;
+    --muted: #7a7672;
+    --accent: #c8f060;
+    --accent2: #f060a0;
+    --tag-bg: rgba(200,240,96,0.1);
+    --tag-text: #c8f060;
+  }
+ 
+  html { scroll-behavior: smooth; }
+ 
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+ 
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+  }
+ 
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 3rem;
+    backdrop-filter: blur(12px);
+    background: rgba(13,13,13,0.7);
+    border-bottom: 1px solid var(--border);
+  }
+ 
+  .nav-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+ 
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+ 
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+ 
+  .nav-links a:hover { color: var(--text); }
+ 
+  .nav-cta {
+    background: var(--accent);
+    color: #0d0d0d;
+    padding: 0.5rem 1.25rem;
+    border-radius: 100px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+ 
+  .nav-cta:hover { opacity: 0.85; }
+ 
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 8rem 3rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+ 
+  .hero-bg-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(8rem, 20vw, 22rem);
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.04);
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -0.05em;
+  }
+ 
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+ 
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 2rem;
+    height: 1px;
+    background: var(--accent);
+  }
+ 
+  .hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(3.5rem, 8vw, 7.5rem);
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+    max-width: 900px;
+  }
+ 
+  .hero-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+ 
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 480px;
+    line-height: 1.7;
+    margin-bottom: 3rem;
+  }
+ 
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+ 
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0d0d;
+    padding: 0.85rem 2rem;
+    border-radius: 100px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.15s, opacity 0.15s;
+  }
+ 
+  .btn-primary:hover { transform: translateY(-2px); opacity: 0.9; }
+ 
+  .btn-ghost {
+    color: var(--text);
+    padding: 0.85rem 2rem;
+    border-radius: 100px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid var(--border-bright);
+    transition: border-color 0.2s, background 0.2s;
+  }
+ 
+  .btn-ghost:hover { border-color: var(--text); background: rgba(255,255,255,0.05); }
+ 
+  .hero-scroll {
+    position: absolute;
+    bottom: 2rem;
+    right: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+  }
+ 
+  .hero-scroll::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 3rem;
+    background: var(--muted);
+  }
+ 
+  /* ── MARQUEE ── */
+  .marquee-wrap {
+    overflow: hidden;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+    background: var(--surface);
+  }
+ 
+  .marquee-track {
+    display: flex;
+    gap: 3rem;
+    width: max-content;
+    animation: marquee 25s linear infinite;
+  }
+ 
+  .marquee-track span {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+ 
+  .marquee-track span.dot {
+    color: var(--accent);
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+ 
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+ 
+  /* ── SECTIONS ── */
+  section { padding: 6rem 3rem; }
+ 
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+ 
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+ 
+  /* ── ABOUT ── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+  }
+ 
+  .about-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+ 
+  .about-body {
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+  }
+ 
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+ 
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+ 
+  .stat-number {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.5rem;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+ 
+  .stat-label {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+ 
+  /* ── SKILLS ── */
+  .skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+ 
+  .skill-tag {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 0.5rem 1.1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text);
+    transition: border-color 0.2s, color 0.2s;
+    cursor: default;
+  }
+ 
+  .skill-tag:hover { border-color: var(--accent); color: var(--accent); }
+ 
+  /* ── WORK / PROJECTS ── */
+  .work { background: var(--surface); }
+ 
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+ 
+  .project-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color 0.25s, transform 0.25s;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+  }
+ 
+  .project-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+  }
+ 
+  .project-card.featured {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+ 
+  .project-thumb {
+    background: var(--surface2);
+    aspect-ratio: 16/10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+ 
+  .project-card.featured .project-thumb {
+    aspect-ratio: auto;
+    min-height: 280px;
+  }
+ 
+  .project-thumb-inner {
+    transition: transform 0.3s;
+  }
+ 
+  .project-card:hover .project-thumb-inner { transform: scale(1.1); }
+ 
+  .project-thumb::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(200,240,96,0.1) 0%, transparent 60%);
+  }
+ 
+  .project-info {
+    padding: 1.75rem;
+  }
+ 
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+ 
+  .project-tag {
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+ 
+  .project-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+  }
+ 
+  .project-desc {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+ 
+  .project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+  }
+ 
+  .project-link::after { content: ' →'; }
+ 
+  /* ── EXPERIENCE ── */
+  .exp-list { display: flex; flex-direction: column; gap: 0; }
+ 
+  .exp-item {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 3rem;
+    padding: 2.5rem 0;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+ 
+  .exp-item:first-child { border-top: 1px solid var(--border); }
+ 
+  .exp-period {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    padding-top: 0.25rem;
+  }
+ 
+  .exp-role {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+ 
+  .exp-company {
+    font-size: 0.9rem;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+ 
+  .exp-desc {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+ 
+  /* ── CONTACT ── */
+  .contact {
+    background: var(--accent);
+    color: #0d0d0d;
+    text-align: center;
+    padding: 7rem 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+ 
+  .contact::before {
+    content: 'HELLO';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'DM Serif Display', serif;
+    font-size: 20vw;
+    color: transparent;
+    -webkit-text-stroke: 2px rgba(0,0,0,0.06);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+ 
+  .contact-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    letter-spacing: -0.03em;
+    line-height: 1.0;
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+ 
+  .contact-sub {
+    font-size: 1.1rem;
+    opacity: 0.65;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+ 
+  .contact .btn-dark {
+    background: #0d0d0d;
+    color: var(--accent);
+    padding: 1rem 2.5rem;
+    border-radius: 100px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-block;
+    transition: transform 0.15s;
+    position: relative;
+  }
+ 
+  .contact .btn-dark:hover { transform: translateY(-2px); }
+ 
+  /* ── FOOTER ── */
+  footer {
+    padding: 2rem 3rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+ 
+  .footer-copy {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+ 
+  .social-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+ 
+  .social-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+ 
+  .social-links a:hover { color: var(--accent); }
+ 
+  /* ── CURSOR ── */
+  .cursor {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.08s, width 0.2s, height 0.2s, opacity 0.2s;
+    mix-blend-mode: exclusion;
+  }
+ 
+  .cursor.big {
+    width: 40px;
+    height: 40px;
+    opacity: 0.5;
+  }
+ 
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .hero { padding: 7rem 1.5rem 3rem; }
+    section { padding: 4rem 1.5rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .project-card.featured { grid-column: 1; grid-template-columns: 1fr; }
+    .exp-item { grid-template-columns: 1fr; gap: 0.5rem; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+ 
+<div class="cursor" id="cursor"></div>
+ 
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Magda Janiec-Pettman</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#education">Education</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Let's talk</a>
+</nav>
+ 
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-text">PEOPLE</div>
+  <p class="hero-eyebrow">Open to new opportunities</p>
+  <h1 class="hero-title">
+    People-first leader<br>
+    across HR, Sales<br>
+    <em>&amp; Operations.</em>
+  </h1>
+  <p class="hero-sub">
+    Senior People &amp; Culture Business Partner and Sales &amp; Operations Leader with 13+ years across Australia, the UK, and the US — in healthcare, government, start-ups, and media.
+  </p>
+  <div class="hero-actions">
+    <a href="#work" class="btn-primary">See my impact</a>
+    <a href="#contact" class="btn-ghost">Get in touch</a>
+  </div>
+  <div class="hero-scroll">Scroll down</div>
+</section>
+ 
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track" id="marquee">
+    <span>Talent Acquisition</span><span class="dot">✦</span>
+    <span>Revenue Growth</span><span class="dot">✦</span>
+    <span>Process Optimisation</span><span class="dot">✦</span>
+    <span>People Strategy</span><span class="dot">✦</span>
+    <span>Sales Enablement</span><span class="dot">✦</span>
+    <span>Workforce Planning</span><span class="dot">✦</span>
+    <span>Talent Acquisition</span><span class="dot">✦</span>
+    <span>Revenue Growth</span><span class="dot">✦</span>
+    <span>Process Optimisation</span><span class="dot">✦</span>
+    <span>People Strategy</span><span class="dot">✦</span>
+    <span>Sales Enablement</span><span class="dot">✦</span>
+    <span>Workforce Planning</span><span class="dot">✦</span>
+  </div>
+</div>
+ 
+<!-- ABOUT -->
+<section id="about">
+  <p class="section-label">About me</p>
+  <div class="about-grid">
+    <div>
+      <h2 class="about-title">Commercially minded. Deeply human. Built for complexity.</h2>
+      <p class="about-body">
+        I'm Magda — a Senior People &amp; Culture Business Partner and Sales &amp; Operations Leader with over 13 years' experience across Australia, the UK, and the US. I've worked across healthcare, state government, start-ups, and media, partnering with senior leaders to deliver strategic and operational people outcomes.
+      </p>
+      <p class="about-body">
+        I bring a strong combination of HR expertise and operational leadership — with proven capability in employee relations, organisational change, leadership coaching, workforce planning, and team development. I'm a trusted advisor who takes a practical, collaborative approach to solving complex people challenges.
+      </p>
+      <a href="#contact" class="btn-ghost" style="display:inline-block; margin-top:1rem;">Download CV</a>
+    </div>
+    <div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number">13+</div>
+          <div class="stat-label">Years of experience</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">3</div>
+          <div class="stat-label">Countries worked in</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">30+</div>
+          <div class="stat-label">People currently managed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">11</div>
+          <div class="stat-label">Clinic sites overseen</div>
+        </div>
+      </div>
+ 
+      <div style="margin-top: 2rem;">
+        <p style="font-size:0.85rem; color:var(--muted); margin-bottom:1rem; font-family:'DM Mono',monospace; letter-spacing:0.08em; text-transform:uppercase;">Skills</p>
+        <div class="skills-list">
+          <span class="skill-tag">Change Management</span>
+          <span class="skill-tag">Employee Relations</span>
+          <span class="skill-tag">Leadership Coaching</span>
+          <span class="skill-tag">Workforce Planning</span>
+          <span class="skill-tag">Performance Management</span>
+          <span class="skill-tag">Organisational Transformation</span>
+          <span class="skill-tag">Employee Engagement</span>
+          <span class="skill-tag">Learning &amp; Development</span>
+          <span class="skill-tag">Stakeholder Management</span>
+          <span class="skill-tag">NLP Practitioner</span>
+          <span class="skill-tag">Thomas International (PPA/GIA)</span>
+          <span class="skill-tag">Fair Work Act</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- WORK -->
+<section class="work" id="work">
+  <p class="section-label">Key achievements</p>
+  <div class="projects-grid">
+ 
+    <a href="#" class="project-card featured">
+      <div class="project-thumb">
+        <div class="project-thumb-inner" style="font-size:6rem;">🏥</div>
+      </div>
+      <div class="project-info">
+        <div class="project-tags">
+          <span class="project-tag">Featured</span>
+          <span class="project-tag">Sales &amp; Operations</span>
+          <span class="project-tag">People Leadership</span>
+        </div>
+        <h3 class="project-title">Leading 11 audiology clinics across Northern Sydney</h3>
+        <p class="project-desc">
+          As Regional Sales &amp; Operations Manager at Audika, I lead a team of 30 employees across 11 clinic sites — overseeing commercial performance, workforce capability, and operational excellence. Coached teams to achieve +2% revenue YoY and +8% average selling price YoY, while improving team cohesion and culture by proactively addressing performance and interpersonal challenges.
+        </p>
+        <span class="project-link">Audika — May 2024 to Present</span>
+      </div>
+    </a>
+ 
+    <a href="#" class="project-card">
+      <div class="project-thumb">
+        <div class="project-thumb-inner">📊</div>
+      </div>
+      <div class="project-info">
+        <div class="project-tags">
+          <span class="project-tag">HR</span>
+          <span class="project-tag">Systems</span>
+        </div>
+        <h3 class="project-title">Digitising performance reviews across ANZ</h3>
+        <p class="project-desc">Led the implementation of a new Annual Performance Review process for Demant Australia &amp; New Zealand, transforming from paper-based to SuccessFactors. Designed and delivered training to leaders and employees across the business.</p>
+        <span class="project-link">Demant — 2023–2024</span>
+      </div>
+    </a>
+ 
+    <a href="#" class="project-card">
+      <div class="project-thumb">
+        <div class="project-thumb-inner">🔄</div>
+      </div>
+      <div class="project-info">
+        <div class="project-tags">
+          <span class="project-tag">Workforce</span>
+          <span class="project-tag">Government</span>
+        </div>
+        <h3 class="project-title">Transitioning 50 temporary roles to permanent</h3>
+        <p class="project-desc">At Transport for NSW, led a workforce project converting 50 temp roles to permanent positions — improving stability and retention while maintaining employee engagement through complex change.</p>
+        <span class="project-link">Transport for NSW — 2022–2023</span>
+      </div>
+    </a>
+ 
+  </div>
+</section>
+ 
+<!-- EXPERIENCE -->
+<section id="experience">
+  <p class="section-label">Experience</p>
+  <div class="exp-list">
+ 
+    <div class="exp-item">
+      <div class="exp-period">May 2024 — Present</div>
+      <div>
+        <div class="exp-role">Regional Sales &amp; Operations Manager</div>
+        <div class="exp-company">Audika, NSW Northern Sydney</div>
+        <p class="exp-desc">Lead daily operations of 11 audiology clinics, overseeing commercial performance, workforce capability, and operational excellence. Manage, coach and develop a team of 30 employees. Drove +2% revenue YoY and +8% average selling price YoY while strengthening team culture and engagement.</p>
+      </div>
+    </div>
+ 
+    <div class="exp-item">
+      <div class="exp-period">June 2023 — May 2024</div>
+      <div>
+        <div class="exp-role">Human Resources Business Partner</div>
+        <div class="exp-company">Demant, Sydney NSW</div>
+        <p class="exp-desc">Partnered with leaders across Audika Australia on strategic and operational HR initiatives. Led the ANZ rollout of SuccessFactors for performance reviews, built a leadership capability framework, and provided expert ER advice to mitigate organisational risk.</p>
+      </div>
+    </div>
+ 
+    <div class="exp-item">
+      <div class="exp-period">Oct 2022 — June 2023</div>
+      <div>
+        <div class="exp-role">Senior People &amp; Culture Business Partner</div>
+        <div class="exp-company">Transport for NSW, Sydney (FTC)</div>
+        <p class="exp-desc">Delivered strategic HR initiatives in a complex, publicly accountable environment. Led a workforce project transitioning 50 temporary roles to permanent, improving stability and retention while supporting leaders through major change.</p>
+      </div>
+    </div>
+ 
+    <div class="exp-item">
+      <div class="exp-period">June 2022 — Oct 2022</div>
+      <div>
+        <div class="exp-role">People &amp; Culture Business Partner</div>
+        <div class="exp-company">Zurich Financial Services, Sydney (FTC)</div>
+        <p class="exp-desc">Supported organisational transformation, conducted skills gap analysis for the IT division, and successfully led the merger of two teams — ensuring a smooth transition and positive employee experience.</p>
+      </div>
+    </div>
+ 
+    <div class="exp-item">
+      <div class="exp-period">Oct 2021 — May 2022</div>
+      <div>
+        <div class="exp-role">Senior People Partner</div>
+        <div class="exp-company">zeroheight, London UK</div>
+        <p class="exp-desc">Led HR strategy and operations for a fast-growing start-up across the UK and US. Introduced private health insurance, mental health first aiders, pension auto-enrolment, and delivered feedback and leadership training across the organisation.</p>
+      </div>
+    </div>
+ 
+    <div class="exp-item">
+      <div class="exp-period">June 2018 — Oct 2021</div>
+      <div>
+        <div class="exp-role">People Business Partner</div>
+        <div class="exp-company">Red Bee Media, London UK</div>
+        <p class="exp-desc">Partnered with operational leaders on ER, talent development, workforce planning, and organisational change — including restructures, redundancies, and union engagement. Implemented a new employee recognition programme and global e-learning platform rollout.</p>
+      </div>
+    </div>
+ 
+  </div>
+</section>
+ 
+<!-- EDUCATION -->
+<section id="education">
+  <p class="section-label">Education &amp; credentials</p>
+  <div class="exp-list">
+    <div class="exp-item">
+      <div class="exp-period">Postgraduate</div>
+      <div>
+        <div class="exp-role">PG Diploma in Human Resource Management</div>
+        <div class="exp-company">Robert Gordon University, Aberdeen UK</div>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-period">Undergraduate</div>
+      <div>
+        <div class="exp-role">BA Hons (2:1) — Politics &amp; International Relations</div>
+        <div class="exp-company">University of Aberdeen, Aberdeen UK</div>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-period">Certifications</div>
+      <div>
+        <div class="exp-role">NLP Practitioner · Thomas International PPA &amp; GIA Accredited</div>
+        <div class="exp-company">Psychometric assessment accreditation</div>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <h2 class="contact-title">Let's work<br>together.</h2>
+  <p class="contact-sub">Open to senior People &amp; Culture, HR, Sales, and Operations leadership roles.</p>
+  <a href="mailto:magda.janiecpettman@gmail.com" class="btn-dark">Say hello →</a>
+</section>
+ 
+<!-- FOOTER -->
+<footer>
+  <p class="footer-copy">© 2026 Magda Janiec-Pettman</p>
+  <div class="social-links">
+    <a href="https://www.linkedin.com/in/magda-janiec-pettman/" target="_blank">LinkedIn</a>
+    <a href="mailto:magda.janiecpettman@gmail.com">Email</a>
+    <a href="tel:+61477912335">+61 477 912 335</a>
+  </div>
+</footer>
+ 
+<script>
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+  });
+ 
+  document.querySelectorAll('a, button, .skill-tag').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('big'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
+  });
+ 
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.background = window.scrollY > 60
+      ? 'rgba(13,13,13,0.95)'
+      : 'rgba(13,13,13,0.7)';
+  });
+</script>
+</body>
+</html>
